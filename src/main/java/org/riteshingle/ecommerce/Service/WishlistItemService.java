@@ -33,6 +33,7 @@ public class WishlistItemService {
         if(wishlistItemRepository.existsByWishlistIdAndProductId(wishlist.getId(),product.getId())){
             throw new RuntimeException("Product is already in wishlist ...");
         }
+
         WishlistItem wishlistItem = WishlistItem.builder()
                 .product(product)
                 .wishlist(wishlist)

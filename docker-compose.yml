@@ -5,7 +5,7 @@ services:
     container_name: mysql-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: "@ritesh#1212007"
+      MYSQL_ROOT_PASSWORD: "SPRING_DATASOURCE_PASSWORD"
       MYSQL_DATABASE: ecommerce
     ports:
       - "3307:3306"
@@ -23,12 +23,10 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecommerce
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: "@ritesh#1212007"
+      SPRING_DATASOURCE_PASSWORD: "SPRING_DATASOURCE_PASSWORD"
 
-      JWT_SECRET: yourSecretKey
+      MAIL_USERNAME: MAIL_USERNAME
+      MAIL_PASSWORD: MAIL_PASSWORD
 
-      MAIL_USERNAME: yourgmail@gmail.com
-      MAIL_PASSWORD: your-app-password
-
-      RAZORPAY_KEY: your_key
-      RAZORPAY_SECRET: your_secret
+      RAZORPAY_KEY: RAZORPAY_KEY
+      RAZORPAY_SECRET: RAZORPAY_SECRETE

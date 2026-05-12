@@ -62,16 +62,19 @@ public class SellerService {
 
 //    Seller inventory
     public List<InventoryDTO> inventoryReport(String name, String category, Double minPrice, Double maxPrice, Double averageRating, Pageable pageable){
+
         Seller seller = findSeller(authService.getCurrentProfile());
-        List<Product> products = productRepository.findBySeller(seller);
-        List<InventoryDTO> inventoryReport = new ArrayList<>();
 
         Specification<Product> specification = Specification
                 .where(ProductSpecifications.hasName(name))
                 .and(ProductSpecifications.hasAverageRating(averageRating))
                 .and(ProductSpecifications.hasMinPrice(minPrice))
                 .and(ProductSpecifications.hasMaxPrice(maxPrice))
-                .and(ProductSpecifications.hasCategory(category));
+                .and(ProductSpecifications.hasCategory(category))
+                .and(ProductSpecifications.hasSeller(seller));
+
+        List<Product> products = productRepository.findAll(specification,pageable).getContent();
+        List<InventoryDTO> inventoryReport = new ArrayList<>();
 
         Map<Long, ProductSalesProjection> map = orderItemRepository.getMonthlySales()
                 .stream()
@@ -199,6 +202,21 @@ public class SellerService {
             throw new RuntimeException("Invalid transition");
         if(status == OrderItemStatus.PENDING && next == OrderItemStatus.DELIVERED)
             throw new RuntimeException("Invalid transaction");
+    }
+
+    public String addStock(Long productId,Integer stock){
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product Not found"));
+        UserEntity currentProfile = authService.getCurrentProfile();
+        Seller seller = sellerRepository.findByUser(currentProfile).orElseThrow(() -> new RuntimeException("Seller not found with : " + currentProfile.getEmail()));
+
+        if(!seller.getId().equals(product.getSeller().getId())){
+            throw new RuntimeException("Unauthorized access .. ");
+        }
+
+        product.setStock(product.getStock()+stock);
+        productRepository.save(product);
+
+        return "Product stock updated";
     }
 
     private OrderDTO toDTO(OrderEntity orderEntity) {

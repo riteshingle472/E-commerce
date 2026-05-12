@@ -3,6 +3,7 @@ package org.riteshingle.ecommerce.Specification;
 import jakarta.persistence.criteria.Join;
 import org.riteshingle.ecommerce.Entity.Product;
 import org.riteshingle.ecommerce.Entity.Review;
+import org.riteshingle.ecommerce.Entity.Seller;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +38,18 @@ public class ProductSpecifications {
             query.groupBy(root.get("id"));
             query.having(cb.ge(cb.avg(reviewJoin.get("rating")), averageRating));
             return cb.conjunction(); // dummy predicate
+        };
+    }
+
+    public static Specification<Product> hasSeller(Seller seller) {
+
+        return (root, query, cb) -> {
+
+            if (seller == null) {
+                return null;
+            }
+
+            return cb.equal(root.get("seller"), seller);
         };
     }
 }

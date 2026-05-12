@@ -52,4 +52,10 @@ public class SellerController {
     public ResponseEntity<OrderDTO> changeOrderStatus(@RequestParam Long orderItemId , @RequestParam OrderItemStatus orderItemStatus){
         return ResponseEntity.ok(sellerService.changeOrderStatus(orderItemId,orderItemStatus));
     }
+
+    @PreAuthorize("hasRole('SELLER')")
+    @PostMapping("/add-stock")
+    public ResponseEntity<String> addStock(@RequestParam Long productId , @RequestParam Integer stock){
+        return ResponseEntity.ok(sellerService.addStock(productId,stock));
+    }
 }
